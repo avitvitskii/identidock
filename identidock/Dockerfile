@@ -7,7 +7,6 @@ COPY cmd.sh /
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 9090 9191
 USER uwsgi
 
 CMD ["/cmd.sh"]
