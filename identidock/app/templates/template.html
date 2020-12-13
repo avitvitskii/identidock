@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div>
+      <div class="container" style="margin-top: 100px">
+          <div class="row d-flex justify-content-center">
+            <div class="col-md-6 text-center">
+                <h1>Hello, <span id="hello">{{name}}</span></h1>
+                <form method="post">
+                    Hello <input id="name" type="text" name="name" value="{{name}}">
+                    <input id="btn" type="submit" value="submit">
+                </form>
+                <p>You look like a:
+                <img id="image" src="/monster/{{name_hash}}"/>
+            </div>
+          </div>
+     </div>
+ </div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="{{
+  url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+<script type=text/javascript>
+</script>
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }}
+  $('input#btn').bind('click', get_image);
+  get_image();
+
+  function get_image() {
+    var name = $('input[name="name"]').val();
+    $('#hello').text(name);
+    $.getJSON($SCRIPT_ROOT + '/monster/' + name, {}, function(data) {
+        $('#image').attr("src", 'data:image/png;base64,' + data.result);
+    });
+    return false;
+  }
+</script>
+</body>
+</html>

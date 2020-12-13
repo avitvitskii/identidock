@@ -1,7 +1,8 @@
-from flask import Flask, Response, request
+from flask import Flask, Response, request, render_template, jsonify, url_for
 import requests
 import hashlib
 import redis
+import base64
 
 app = Flask(__name__)
 cache = redis.StrictRedis(host='redis', port=6379, db=0)
@@ -18,18 +19,8 @@ def mainpage():
 
     salted_name = salt + name
     name_hash = hashlib.sha256(salted_name.encode()).hexdigest()
-    header = '<html><head><title>Identidock</title></head><body>'
-    body = '''<form method="POST">
-              Hello <input type="text" name="name" value="{0}">
-              <input type="submit" value="submit">
-              </form>
-              <p>You look like a:
-              <img src="/monster/{1}"/>
-              '''.format(name, name_hash)
-    footer = '</body></html>'
 
-    return header + body + footer
-
+    return render_template("template.html", name = name, name_hash = name_hash)
 
 @app.route('/monster/<name>')
 def get_identicon(name):
@@ -41,7 +32,8 @@ def get_identicon(name):
         image = r.content
         cache.set(name, image)
 
-    return Response(image, mimetype='image/png')
+    image = base64.encodebytes(image).decode('utf-8')
+    return jsonify(result = image)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
