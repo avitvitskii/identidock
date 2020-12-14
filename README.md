@@ -1,2 +1,2 @@
-# Using Docker Code Examples
-## "Image Distribution"
+# Identidock
+## Generates your avatar
